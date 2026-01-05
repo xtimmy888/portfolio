@@ -1,4 +1,27 @@
 /* =====================================================
+   THEME + BASE SETTINGS (Easy to tweak later)
+   ===================================================== */
+
+/* CSS variables: change these once, the whole site updates */
+:root {
+  /* Colors */
+  --bg: #ffffff;
+  --text: #111111;
+  --muted: rgba(0, 0, 0, 0.75);
+  --border: rgba(0, 0, 0, 0.12);
+
+  /* Brand accent (used for highlights) */
+  --accent: #2563eb;
+
+  /* Layout */
+  --max-width: 980px;
+  --radius: 14px;
+
+  /* Shadows */
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+/* =====================================================
    GLOBAL BASE STYLES
    - Normalize layout behavior
    - Set default typography
@@ -23,8 +46,19 @@ body {
   margin: 0;
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
   line-height: 1.6;
+  /* global background + text color */
+  background: #ffffff;
+  color: #111111;
 }
 
+/* Improve default link styling site-wide (clean + consistent) */
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
 
 /* =====================================================
    LAYOUT CONTAINER
@@ -35,7 +69,7 @@ body {
 .container {
   max-width: 980px;     /* Prevents overly wide layouts */
   margin: 0 auto;       /* Centers container horizontally */
-  padding: 20px;        /* Inner spacing */
+  padding: 22px;        /* Inner spacing */
 }
 
 
@@ -48,24 +82,28 @@ body {
   justify-content: space-between;   /* Logo left, links right */
   align-items: center;              /* Vertical centering */
   gap: 16px;
+
+/* a bit of vertical padding so nav feels intentional */
+  padding: 10px 0;
 }
 
 /* Logo / name styling */
 .logo {
-  font-weight: 700;                 /* Bold text */
+  font-weight: 800;                 /* Bold text */
+  letter-spacing: 0.2px;
 }
 
 /* Navigation links */
 .links a {
   margin-left: 14px;                /* Space between links */
-  text-decoration: none;            /* Remove underline */
-  color: inherit;                   /* Use parent text color */
-  opacity: 0.85;                    /* Slightly muted by default */
+  color: var(--text);                   /* Use parent text color */
+  opacity: 0.78;                    /* Slightly muted by default */
 }
 
 /* Hover state for nav links */
 .links a:hover {
   opacity: 1;                       /* Fully visible on hover */
+  text-decoration: none;
 }
 
 
@@ -80,16 +118,16 @@ body {
 
 /* Main heading */
 .hero h1 {
-  font-size: 44px;                   /* Large headline */
-  line-height: 1.1;                  /* Tight vertical spacing */
+  font-size: 48px;                   /* Large headline */
+  line-height: 1.05;                  /* Tight vertical spacing */
   margin: 0 0 10px;                  /* Space below */
 }
 
 /* Hero description text */
 .hero p {
-  max-width: 650px;                  /* Limit line length */
+  max-width: 720px;                  /* Limit line length */
   margin: 0 0 18px;
-  opacity: 0.85;                     /* Slightly muted */
+  color: var(--muted);                     /* Slightly muted */
 }
 
 
@@ -107,19 +145,28 @@ body {
 .btn {
   display: inline-block;
   padding: 10px 14px;
-  border-radius: 10px;               /* Rounded corners */
-  text-decoration: none;
-  border: 1px solid #111;
+  border-radius: 12px;               /* Rounded corners */
+  border: 1px solid var(--text);
+  background: var(--text);
   color: #fff;
-  background: #111;
+  font-weight: 600;
+}
+
+.btn:hover {
+  text-decoration: none;
+  opacity: 0.92; /* subtle hover */
 }
 
 /* Secondary / outline button style */
 .btn-outline {
   background: transparent;
-  color: #111;
+  color: var(--text);
+  border: 1px solid var(--border);
 }
 
+.btn-outline:hover {
+  border-color: var(--text);
+}
 
 /* =====================================================
    SECTION WRAPPER
@@ -127,8 +174,14 @@ body {
    ===================================================== */
 
 .section {
-  padding: 28px 0;                   /* Vertical spacing */
+  padding: 34px 0;                   /* Vertical spacing */
   border-top: 1px solid rgba(0,0,0,0.08); /* Subtle divider */
+}
+
+/* consistent spacing under section titles */
+.section h2 {
+  margin: 0 0 12px;
+  font-size: 22px;
 }
 
 
@@ -142,19 +195,40 @@ body {
      - Cards are at least 240px wide
      - Auto-adjusts columns based on screen size */
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 14px;
+  gap: 16px;
 }
 
 /* Individual project card */
 .card {
-  border: 1px solid rgba(0,0,0,0.12);
-  border-radius: 14px;
-  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  background: #fff;
+
+  /* subtle depth */
+  box-shadow: 0 0 0 rgba(0,0,0,0);
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow);
+  border-color: rgba(0,0,0,0.18);
+}
+
+.card h3 {
+  margin: 0 0 8px;
+}
+
+.card p {
+  margin: 0 0 12px;
+  color: var(--muted);
 }
 
 /* Links inside project cards */
 .card-links a {
   margin-right: 12px;
+  font-weight: 600;
 }
 
 
@@ -172,9 +246,10 @@ body {
 
 /* Individual skill pill */
 .chips li {
-  border: 1px solid rgba(0,0,0,0.15);
-  padding: 6px 10px;
+  border: 1px solid var(--border);
+  padding: 7px 10px;
   border-radius: 999px;              /* Pill shape */
+  background: rgba(0,0,0,0.03);    /* New: subtle fill */
 }
 
 
@@ -183,6 +258,6 @@ body {
    ===================================================== */
 
 .footer {
-  padding: 30px 20px;
+  padding: 34px 22px;
   opacity: 0.7;                      /* Muted appearance */
 }
