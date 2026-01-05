@@ -1,57 +1,188 @@
-* { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+/* =====================================================
+   GLOBAL BASE STYLES
+   - Normalize layout behavior
+   - Set default typography
+   ===================================================== */
+
+/* Apply border-box sizing to all elements
+   This makes width/height calculations predictable */
+* {
+  box-sizing: border-box;
+}
+
+/* Smooth scrolling when clicking anchor links (e.g. nav) */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Base body styles
+   - Remove browser default margin
+   - Set readable system font stack
+   - Improve text readability with line-height */
 body {
   margin: 0;
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
   line-height: 1.6;
 }
 
-.container { max-width: 980px; margin: 0 auto; padding: 20px; }
+
+/* =====================================================
+   LAYOUT CONTAINER
+   - Centers content
+   - Limits max width for readability
+   ===================================================== */
+
+.container {
+  max-width: 980px;     /* Prevents overly wide layouts */
+  margin: 0 auto;       /* Centers container horizontally */
+  padding: 20px;        /* Inner spacing */
+}
+
+
+/* =====================================================
+   NAVIGATION BAR
+   ===================================================== */
 
 .nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  display: flex;                    /* Horizontal layout */
+  justify-content: space-between;   /* Logo left, links right */
+  align-items: center;              /* Vertical centering */
   gap: 16px;
 }
-.logo { font-weight: 700; }
-.links a { margin-left: 14px; text-decoration: none; color: inherit; opacity: 0.85; }
-.links a:hover { opacity: 1; }
 
-.hero { padding: 40px 0 10px; }
-.hero h1 { font-size: 44px; line-height: 1.1; margin: 0 0 10px; }
-.hero p { max-width: 650px; margin: 0 0 18px; opacity: 0.85; }
+/* Logo / name styling */
+.logo {
+  font-weight: 700;                 /* Bold text */
+}
 
-.cta { display: flex; gap: 12px; flex-wrap: wrap; }
+/* Navigation links */
+.links a {
+  margin-left: 14px;                /* Space between links */
+  text-decoration: none;            /* Remove underline */
+  color: inherit;                   /* Use parent text color */
+  opacity: 0.85;                    /* Slightly muted by default */
+}
+
+/* Hover state for nav links */
+.links a:hover {
+  opacity: 1;                       /* Fully visible on hover */
+}
+
+
+/* =====================================================
+   HERO SECTION
+   - Top intro section
+   ===================================================== */
+
+.hero {
+  padding: 40px 0 10px;              /* Extra space at the top */
+}
+
+/* Main heading */
+.hero h1 {
+  font-size: 44px;                   /* Large headline */
+  line-height: 1.1;                  /* Tight vertical spacing */
+  margin: 0 0 10px;                  /* Space below */
+}
+
+/* Hero description text */
+.hero p {
+  max-width: 650px;                  /* Limit line length */
+  margin: 0 0 18px;
+  opacity: 0.85;                     /* Slightly muted */
+}
+
+
+/* =====================================================
+   CALL-TO-ACTION BUTTONS
+   ===================================================== */
+
+.cta {
+  display: flex;                     /* Buttons in a row */
+  gap: 12px;                         /* Space between buttons */
+  flex-wrap: wrap;                   /* Wrap on small screens */
+}
+
+/* Base button style */
 .btn {
   display: inline-block;
   padding: 10px 14px;
-  border-radius: 10px;
+  border-radius: 10px;               /* Rounded corners */
   text-decoration: none;
   border: 1px solid #111;
   color: #fff;
   background: #111;
 }
-.btn-outline { background: transparent; color: #111; }
 
-.section { padding: 28px 0; border-top: 1px solid rgba(0,0,0,0.08); }
+/* Secondary / outline button style */
+.btn-outline {
+  background: transparent;
+  color: #111;
+}
+
+
+/* =====================================================
+   SECTION WRAPPER
+   - Used for About, Projects, Skills, Contact
+   ===================================================== */
+
+.section {
+  padding: 28px 0;                   /* Vertical spacing */
+  border-top: 1px solid rgba(0,0,0,0.08); /* Subtle divider */
+}
+
+
+/* =====================================================
+   PROJECT GRID & CARDS
+   ===================================================== */
+
 .grid {
   display: grid;
+  /* Responsive grid:
+     - Cards are at least 240px wide
+     - Auto-adjusts columns based on screen size */
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 14px;
 }
+
+/* Individual project card */
 .card {
   border: 1px solid rgba(0,0,0,0.12);
   border-radius: 14px;
   padding: 14px;
 }
-.card-links a { margin-right: 12px; }
 
-.chips { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; }
+/* Links inside project cards */
+.card-links a {
+  margin-right: 12px;
+}
+
+
+/* =====================================================
+   SKILLS "CHIPS"
+   ===================================================== */
+
+.chips {
+  list-style: none;                  /* Remove bullets */
+  padding: 0;
+  display: flex;                     /* Horizontal layout */
+  flex-wrap: wrap;                   /* Wrap on smaller screens */
+  gap: 10px;
+}
+
+/* Individual skill pill */
 .chips li {
   border: 1px solid rgba(0,0,0,0.15);
   padding: 6px 10px;
-  border-radius: 999px;
+  border-radius: 999px;              /* Pill shape */
 }
 
-.footer { padding: 30px 20px; opacity: 0.7; }
+
+/* =====================================================
+   FOOTER
+   ===================================================== */
+
+.footer {
+  padding: 30px 20px;
+  opacity: 0.7;                      /* Muted appearance */
+}
