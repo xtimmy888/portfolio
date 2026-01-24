@@ -5,8 +5,8 @@
 /* CSS variables: change these once, the whole site updates */
 :root {
   /* Colors */
-  --bg: #ffffff;
-  --text: #111111;
+  --bg: #fefcfc;
+  --text: #000000;
   --muted: rgba(0, 0, 0, 0.75);
   --border: rgba(0, 0, 0, 0.12);
 
@@ -20,6 +20,28 @@
   /* Shadows */
   --shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
+
+/* =====================================================
+   PARTICLE BACKGROUND CANVAS
+   - Fixed behind content
+   - Does not block clicks
+   ===================================================== */
+
+/* Particle canvas sits behind content but above the page background */
+#particle-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;            /* NOT negative */
+  pointer-events: none;
+}
+
+/* Make sure all real content is above the canvas */
+header, main, footer {
+  position: relative;
+  z-index: 1;
+}
+
+
 
 /* =====================================================
    GLOBAL BASE STYLES
@@ -47,8 +69,8 @@ body {
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
   line-height: 1.6;
   /* global background + text color */
-  background: #ffffff;
-  color: #111111;
+  background: #fffefe;
+  color: #000000;
 }
 
 /* Improve default link styling site-wide (clean + consistent) */
@@ -59,6 +81,8 @@ a {
 a:hover {
   text-decoration: underline;
 }
+
+
 
 /* =====================================================
    LAYOUT CONTAINER
