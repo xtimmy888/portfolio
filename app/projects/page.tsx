@@ -3,6 +3,7 @@ import { Section, SectionHeading } from "@/components/ui/section";
 import { Reveal } from "@/components/ui/reveal";
 import { ProjectCard } from "@/components/project-card";
 import { projects } from "@/data/projects";
+import { CosmicPage } from "@/components/cosmic-page";
 
 export const metadata: Metadata = {
   title: "Projects",
@@ -12,7 +13,8 @@ export const metadata: Metadata = {
 
 export default function ProjectsPage() {
   return (
-    <Section className="pt-28">
+    <CosmicPage>
+      <Section>
       <SectionHeading
         eyebrow="Projects"
         title="All projects"
@@ -26,6 +28,7 @@ export default function ProjectsPage() {
           </Reveal>
         ))}
       </div>
-    </Section>
+      </Section>
+    </CosmicPage>
   );
 }

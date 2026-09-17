@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { GraduationCap, MapPin, CalendarDays } from "lucide-react";
 import { Section, SectionHeading } from "@/components/ui/section";
 import { Reveal } from "@/components/ui/reveal";
@@ -23,15 +24,25 @@ export function About() {
 
       <div className="grid gap-10 lg:grid-cols-5">
         <Reveal className="lg:col-span-3">
-          <div className="space-y-4 text-base leading-relaxed text-muted">
-            <p>{profile.summary}</p>
-            <p>
-              I&apos;m most at home where rigorous problem-solving meets
-              practical engineering — building backtesting engines and ML
-              pipelines for quantitative research, running molecular-dynamics
-              simulations on HPC clusters, and shipping reproducible workflows
-              with Docker, PostgreSQL, and CI.
-            </p>
+          <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
+            <Image
+              src="/me.jpg"
+              alt="Tahmid Zalal (Tim)"
+              width={176}
+              height={234}
+              priority
+              className="shrink-0 rounded-2xl border border-border object-cover shadow-[0_14px_54px_-14px_color-mix(in_oklab,var(--accent)_60%,transparent)]"
+            />
+            <div className="space-y-4 text-base leading-relaxed text-muted">
+              <p>{profile.summary}</p>
+              <p>
+                I&apos;m most at home where rigorous problem-solving meets
+                practical engineering — building backtesting engines and ML
+                pipelines for quantitative research, running molecular-dynamics
+                simulations on HPC clusters, and shipping reproducible workflows
+                with Docker, PostgreSQL, and CI.
+              </p>
+            </div>
           </div>
 
           <div className="mt-8">

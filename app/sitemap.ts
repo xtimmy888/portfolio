@@ -6,14 +6,20 @@ import { getAllPosts } from "@/lib/blog";
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
 
-  const staticRoutes: MetadataRoute.Sitemap = ["", "/projects", "/blog"].map(
-    (path) => ({
-      url: `${siteUrl}${path}`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: path === "" ? 1 : 0.8,
-    }),
-  );
+  const staticRoutes: MetadataRoute.Sitemap = [
+    "",
+    "/about",
+    "/experience",
+    "/projects",
+    "/skills",
+    "/blog",
+    "/contact",
+  ].map((path) => ({
+    url: `${siteUrl}${path}`,
+    lastModified: now,
+    changeFrequency: "monthly",
+    priority: path === "" ? 1 : 0.8,
+  }));
 
   const projectRoutes: MetadataRoute.Sitemap = getProjectSlugs().map((slug) => ({
     url: `${siteUrl}/projects/${slug}`,

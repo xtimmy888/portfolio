@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { CosmicPage } from "@/components/cosmic-page";
 import {
   ArrowLeft,
   ArrowRight,
@@ -60,7 +61,8 @@ export default async function ProjectPage({
   const next = projects[(index + 1) % projects.length];
 
   return (
-    <Section className="pt-28">
+    <CosmicPage>
+      <Section>
       <Link
         href="/projects"
         className="inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-foreground"
@@ -179,6 +181,7 @@ export default async function ProjectPage({
           <ArrowRight className="h-5 w-5 text-muted transition-all group-hover:translate-x-1 group-hover:text-accent" />
         </Link>
       </div>
-    </Section>
+      </Section>
+    </CosmicPage>
   );
 }

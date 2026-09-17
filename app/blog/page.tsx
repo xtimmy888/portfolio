@@ -5,6 +5,7 @@ import { Section, SectionHeading } from "@/components/ui/section";
 import { Reveal } from "@/components/ui/reveal";
 import { Badge } from "@/components/ui/badge";
 import { getAllPosts, formatDate } from "@/lib/blog";
+import { CosmicPage } from "@/components/cosmic-page";
 
 export const metadata: Metadata = {
   title: "Blog",
@@ -16,7 +17,8 @@ export default function BlogPage() {
   const posts = getAllPosts();
 
   return (
-    <Section className="pt-28">
+    <CosmicPage>
+      <Section>
       <SectionHeading
         eyebrow="Blog"
         title="Writing"
@@ -60,6 +62,7 @@ export default function BlogPage() {
           ))}
         </div>
       )}
-    </Section>
+      </Section>
+    </CosmicPage>
   );
 }

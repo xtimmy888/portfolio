@@ -9,29 +9,29 @@
    dark overrides on .dark. Mapped into Tailwind below.
    ===================================================== */
 :root {
-  --background: #fbfbfd;
-  --surface: #f3f4f7;
-  --foreground: #0a0b0f;
-  --muted: #586173;
+  --background: #f6f7fb;
+  --surface: #eef1f8;
+  --foreground: #0a0c16;
+  --muted: #55607a;
   --card: #ffffff;
-  --card-foreground: #0a0b0f;
-  --border: rgba(10, 11, 15, 0.1);
-  --accent: #059669; /* emerald-600 (darker for contrast on light) */
-  --accent-2: #0891b2; /* cyan-600 */
-  --ring: #059669;
+  --card-foreground: #0a0c16;
+  --border: rgba(20, 30, 70, 0.1);
+  --accent: #4338ca; /* indigo-700 (contrast on light) */
+  --accent-2: #7c3aed; /* violet-600 */
+  --ring: #4338ca;
 }
 
 .dark {
-  --background: #07080c;
-  --surface: #0e1016;
-  --foreground: #e8eaf0;
-  --muted: #98a2b3;
-  --card: #0d0f15;
-  --card-foreground: #e8eaf0;
-  --border: rgba(255, 255, 255, 0.08);
-  --accent: #34d399; /* emerald-400 */
-  --accent-2: #22d3ee; /* cyan-400 */
-  --ring: #34d399;
+  --background: #04050d; /* deep space */
+  --surface: #0a0d1a;
+  --foreground: #e7ecf3;
+  --muted: #96a0b8;
+  --card: #090d1a;
+  --card-foreground: #e7ecf3;
+  --border: rgba(140, 180, 255, 0.1);
+  --accent: #4cc9f0; /* cyan */
+  --accent-2: #8b7bff; /* violet */
+  --ring: #4cc9f0;
 }
 
 /* Expose tokens + fonts to Tailwind utilities (bg-background, text-accent, ...) */

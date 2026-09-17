@@ -8,6 +8,7 @@ import rehypePrettyCode from "rehype-pretty-code";
 import { getAllPosts, getPostBySlug, formatDate } from "@/lib/blog";
 import { Section } from "@/components/ui/section";
 import { Badge } from "@/components/ui/badge";
+import { CosmicPage } from "@/components/cosmic-page";
 
 export function generateStaticParams() {
   return getAllPosts().map((post) => ({ slug: post.slug }));
@@ -39,7 +40,8 @@ export default async function PostPage({
   if (!post) notFound();
 
   return (
-    <Section className="pt-28">
+    <CosmicPage>
+      <Section>
       <div className="mx-auto max-w-3xl">
         <Link
           href="/blog"
@@ -80,6 +82,7 @@ export default async function PostPage({
           />
         </article>
       </div>
-    </Section>
+      </Section>
+    </CosmicPage>
   );
 }

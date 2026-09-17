@@ -4,8 +4,6 @@ import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Nav } from "@/components/nav";
-import { Footer } from "@/components/footer";
-import { ParticleField } from "@/components/particle-field";
 import { profile } from "@/data/profile";
 import { siteUrl } from "@/lib/site";
 
@@ -113,7 +111,7 @@ export default function RootLayout({
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
-          enableSystem
+          forcedTheme="dark"
           disableTransitionOnChange
         >
           <a
@@ -122,12 +120,10 @@ export default function RootLayout({
           >
             Skip to content
           </a>
-          <ParticleField />
           <Nav />
-          <main id="main" className="relative z-10">
+          <main id="main" className="relative">
             {children}
           </main>
-          <Footer />
         </ThemeProvider>
         <Analytics />
       </body>
