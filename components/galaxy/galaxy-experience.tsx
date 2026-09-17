@@ -31,13 +31,15 @@ export function GalaxyExperience() {
     if (!canvas || !flash) return;
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const isMobile =
+      window.innerWidth < 768 || window.matchMedia("(pointer: coarse)").matches;
     const clamp = (v: number, a: number, b: number) => (v < a ? a : v > b ? b : v);
     const timers: ReturnType<typeof setTimeout>[] = [];
     let W = window.innerWidth;
     let H = window.innerHeight;
 
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 2));
     renderer.setSize(W, H);
     renderer.setClearColor(0x03040a, 1);
 
@@ -64,7 +66,7 @@ export function GalaxyExperience() {
     scene.add(galaxy);
 
     {
-      const count = 24000;
+      const count = isMobile ? 9000 : 24000;
       const pos = new Float32Array(count * 3);
       const col = new Float32Array(count * 3);
       const radius = 9;
@@ -108,7 +110,7 @@ export function GalaxyExperience() {
     }
 
     {
-      const n = 1800;
+      const n = isMobile ? 700 : 1800;
       const p = new Float32Array(n * 3);
       for (let s = 0; s < n; s++) {
         const rr = 24 + Math.random() * 40;
@@ -176,10 +178,17 @@ export function GalaxyExperience() {
       routerRef.current.prefetch(o.route);
     });
 
-    const composer = new EffectComposer(renderer);
-    composer.addPass(new RenderPass(scene, camera));
-    const bloom = new UnrealBloomPass(new THREE.Vector2(W, H), 0.6, 0.5, 0.18);
-    composer.addPass(bloom);
+    // Bloom is desktop-only — on phones we skip post-processing for smooth FPS.
+    let composer: EffectComposer | null = null;
+    if (!isMobile) {
+      composer = new EffectComposer(renderer);
+      composer.addPass(new RenderPass(scene, camera));
+      composer.addPass(
+        new UnrealBloomPass(new THREE.Vector2(W, H), 0.6, 0.5, 0.18),
+      );
+    }
+    const render = () =>
+      composer ? composer.render() : renderer.render(scene, camera);
 
     const CENTER = new THREE.Vector3(0, 0, 0);
     const A = new THREE.Vector3(0, 2.4, 10);
@@ -233,6 +242,10 @@ export function GalaxyExperience() {
       lastY = 0,
       flatten = false,
       navLock = 0;
+    let downX = 0,
+      downY = 0,
+      downT = 0,
+      isTouch = false;
 
     const setState = (s: string) => {
       state = s;
@@ -362,8 +375,12 @@ export function GalaxyExperience() {
       if (t && t.closest && t.closest(".gx-ui")) return;
       if (state !== "select" && state !== "intro" && state !== "overview") return;
       dragging = true;
+      isTouch = e.pointerType === "touch";
       lastX = e.clientX;
       lastY = e.clientY;
+      downX = e.clientX;
+      downY = e.clientY;
+      downT = performance.now();
     };
     const onMove = (e: PointerEvent) => {
       mx = (e.clientX / window.innerWidth - 0.5) * 2;
@@ -373,14 +390,32 @@ export function GalaxyExperience() {
       const dy = e.clientY - lastY;
       galaxy.rotation.y += dx * 0.005;
       vel = dx * 0.005;
-      if (state === "intro" || state === "select") {
+      // vertical tilt is mouse-only; on touch, vertical is reserved for swipe-nav
+      if (!isTouch && (state === "intro" || state === "select")) {
         galaxy.rotation.x = clamp(galaxy.rotation.x + dy * 0.004, -TILT_MAX, TILT_MAX);
         velX = dy * 0.004;
       }
       lastX = e.clientX;
       lastY = e.clientY;
     };
-    const onUp = () => (dragging = false);
+    const onUp = (e: PointerEvent) => {
+      // touch: a quick vertical swipe moves between intro / selector / overview
+      if (dragging && isTouch) {
+        const tdx = e.clientX - downX;
+        const tdy = e.clientY - downY;
+        const tdt = performance.now() - downT;
+        if (Math.abs(tdy) > 55 && Math.abs(tdy) > Math.abs(tdx) && tdt < 700) {
+          if (tdy < 0) {
+            if (state === "intro") toSelect();
+            else if (state === "select") toOverview();
+          } else {
+            if (state === "overview") fromOverview();
+            else if (state === "select") toIntro();
+          }
+        }
+      }
+      dragging = false;
+    };
     window.addEventListener("wheel", onWheel, { passive: true });
     window.addEventListener("pointerdown", onDown);
     window.addEventListener("pointermove", onMove);
@@ -450,7 +485,7 @@ export function GalaxyExperience() {
         const target = state === "select" ? 1 : state === "dive" && an === selAnchor ? 1 : 0;
         an.mat.opacity += (target - an.mat.opacity) * 0.12;
       }
-      composer.render();
+      render();
       projectLabels();
       raf = requestAnimationFrame(animate);
     };
@@ -459,7 +494,7 @@ export function GalaxyExperience() {
       W = window.innerWidth;
       H = window.innerHeight;
       renderer.setSize(W, H);
-      composer.setSize(W, H);
+      if (composer) composer.setSize(W, H);
       camera.aspect = W / H;
       camera.updateProjectionMatrix();
     };
@@ -500,7 +535,7 @@ export function GalaxyExperience() {
         const h = (el as HTMLElement & { _h?: EventListener })._h;
         if (h) el.removeEventListener("click", h);
       });
-      composer.dispose();
+      composer?.dispose();
       renderer.dispose();
     };
   }, []);
@@ -539,7 +574,7 @@ export function GalaxyExperience() {
 
       {/* select hint */}
       <div className="gx-ui pointer-events-none absolute bottom-7 left-1/2 -translate-x-1/2 text-center font-mono text-[12px] tracking-[0.1em] text-white/65 opacity-0 transition-opacity duration-500 group-data-[state=select]:opacity-100">
-        drag to spin &amp; tilt · click a star to enter · scroll ↓ for the overview
+        drag to spin · tap a star to enter · scroll or swipe for the overview
       </div>
 
       {/* option labels (positioned by JS) */}
@@ -547,7 +582,7 @@ export function GalaxyExperience() {
         {OPTIONS.map((o) => (
           <button
             key={o.route}
-            className="gx-label absolute left-0 top-0 flex -translate-x-1/2 -translate-y-1/2 cursor-pointer items-center whitespace-nowrap rounded-full border border-[#8fd6ff]/35 bg-[#080c1a]/50 px-[15px] py-2 font-mono text-[13px] tracking-[0.06em] text-[#cfe4ff] opacity-0 backdrop-blur-sm transition-[color,border-color,box-shadow] before:mr-2 before:inline-block before:h-1.5 before:w-1.5 before:rounded-full before:bg-[#7fd0ff] before:shadow-[0_0_8px_#7fd0ff]"
+            className="gx-label absolute left-0 top-0 flex -translate-x-1/2 -translate-y-1/2 cursor-pointer items-center whitespace-nowrap rounded-full border border-[#8fd6ff]/35 bg-[#080c1a]/60 px-4 py-2.5 font-mono text-[13px] tracking-[0.06em] text-[#cfe4ff] opacity-0 backdrop-blur-sm transition-[color,border-color,box-shadow] before:mr-2 before:inline-block before:h-1.5 before:w-1.5 before:rounded-full before:bg-[#7fd0ff] before:shadow-[0_0_8px_#7fd0ff]"
           >
             {o.label}
           </button>
