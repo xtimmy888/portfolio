@@ -1,0 +1,79 @@
+---
+title: "Predicting Rejected ODE Solver Steps with Machine Learning"
+description: "How I turned 1.1M adaptive RK45 step attempts into a leakage-free dataset and trained an XGBoost model to predict rejected steps before taking them."
+date: "2026-05-20"
+tags: ["Machine Learning", "Scientific Computing", "Python"]
+published: true
+---
+
+Adaptive ODE solvers are clever: they shrink the step size when the dynamics
+get stiff and grow it when things are smooth. But that adaptivity has a hidden
+cost — **rejected steps**. Every time the estimated local error exceeds the
+tolerance, the solver throws away the work it just did and tries again with a
+smaller step.
+
+I spent a research term asking a simple question: *can we predict, before
+taking a step, whether it will be rejected?*
+
+## The data
+
+I built and validated a Python/Fortran adaptive **RK45 / Dormand–Prince 5(4)**
+solver and ran it across a spread of scalar and coupled systems — exponential
+decay, logistic growth, the simple harmonic oscillator, Van der Pol, and the
+Lorenz attractor.
+
+That produced a lot of telemetry:
+
+- **1,115,989** adaptive step attempts
+- across **7,810** runs
+- each labeled *accepted* or *rejected*
+
+## Avoiding leakage
+
+The subtle part is that whether a step is rejected is determined by the
+*post-step* error estimate. If you train on that, you've leaked the answer.
+
+So every feature is computed from information available **before** the step is
+taken:
+
+- current step size and tolerance
+- state norm and slope norm
+- ODE parameters and problem type
+
+Splits are done at the **run level**, never the row level — otherwise steps
+from the same trajectory leak between train and test.
+
+```python
+features = [
+    "step_size", "tolerance",
+    "state_norm", "slope_norm",
+    "ode_param", "problem_type",
+]
+
+# Group-aware split so a run never spans train/test
+train_runs, test_runs = split_by_run(runs, test_size=0.2, seed=42)
+X_train, y_train = build_matrix(train_runs, features)
+X_test,  y_test  = build_matrix(test_runs,  features)
+```
+
+## Results
+
+A tuned **XGBoost** classifier clearly beat logistic regression on the
+rejected-step minority class:
+
+| Metric        | Tuned XGBoost |
+| ------------- | ------------- |
+| PR-AUC        | **0.916**     |
+| Precision     | 90.7%         |
+| Recall        | 73.1%         |
+| F1            | **0.810**     |
+
+> The model learns the *shape* of where a solver is about to struggle — and it
+> does so without ever seeing the post-step error.
+
+## What's next
+
+The natural follow-up is a **solver policy**: use the predictions to pre-empt
+rejected steps, choosing a smaller initial step when the model is confident a
+rejection is coming. I wrote up the methods and findings as a structured
+research-paper draft — more on that soon.
